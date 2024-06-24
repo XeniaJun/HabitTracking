@@ -1,0 +1,31 @@
+flowchart TD
+    A[Start Application] --> B[Main Menu]
+    B --> C{Choose an action}
+    C --> D[Create Habit]
+    C --> E[Read Items]
+    C --> F[Complete habit]
+    C --> G[Create Predefined Habit]
+    C --> H[Habit statistics]
+    C --> I[Exit]
+    D --> J[Prompt for habit name]
+    J --> K[Prompt for periodicity]
+    K --> L[Call add_habit]
+    L --> B
+    E --> M[Call list_habits]
+    M --> B
+    F --> N[Prompt for habit ID]
+    N --> O[Call complete_habit]
+    O --> B
+    G --> P[Prompt for predefined habit]
+    P --> Q[Prompt for periodicity]
+    Q --> R[Call add_habit]
+    R --> B
+    H --> S[Call get_statistics]
+    S --> B
+    I --> T[Print 'Exiting the application.']
+    T --> U[End]
+    click L href "add_habit"
+    click M href "list_habits"
+    click O href "complete_habit"
+    click R href "add_habit"
+    click S href "get_statistics"
