@@ -1,15 +1,34 @@
+import datetime
 import os
 
 import click
 import questionary
+from prompt_toolkit.styles import Style
 
 from Habit import HabitManager
-from db.DatabaseModule import session
+from db.DatabaseModule import session, Habit
 
 
 # TODO: implement this with the already implemented AnalyticsModule.py. it still needs refactoring
 def view_statistics():
+    clear_screen()
+    choice = questionary.select(
+        "Statistic Menu:",
+        choices=[
+            "get longest streak",
+            "Create Habit",
+            "Read Items",
+            "Complete habit",
+            "Create Predefined Habit",
+            "Habit statistics",
+            "Exit"
+        ]
+    ).ask()
     pass
+
+
+def set_milestone_for_habit():
+    list_habits()
 
 
 def main_menue():
@@ -25,6 +44,7 @@ def main_menue():
         choice = questionary.select(
             "Choose an action:",
             choices=[
+                "Checkin Habit streak",
                 "Create Habit",
                 "Read Items",
                 "Complete habit",
@@ -33,13 +53,15 @@ def main_menue():
                 "Exit"
             ]
         ).ask()
-
-        clear_screen()
         if choice == "Create Habit":
             name = questionary.text("Name of habit", default="nothing").ask()
-            periodicity = questionary.select("What do you want to add?",
+            periodicity = questionary.select("\nWhat do you want to add?",
                                              choices=["daily", "weekly"]).ask()
-            add_habit(name, periodicity)
+            target_duration_in_days = questionary.text("\n How many Days do you want to keep up?", default='30').ask()
+            target_date = datetime.datetime.now().date() + datetime.timedelta(days=int(target_duration_in_days))
+            add_habit(name, periodicity, target_date)
+        elif choice == "Checkin Habit streak":
+            set_milestone_for_habit()
         elif choice == "Read Items":
             list_habits()
         elif choice == "Complete habit":
@@ -51,6 +73,8 @@ def main_menue():
         elif choice == "Exit":
             print("Exiting the application.")
             break
+
+        clear_screen()
 
 
 def clear_screen():
@@ -68,11 +92,13 @@ def predefined_habit():
         questionary.select("Choose a predefined habit!",
                            choices=["Nail biting", "smoking", "eating sugar"]).ask(),
         questionary.select("How often do you want to set checkpoints?",
-                           choices=["every day", "every week"]).ask()
+                           choices=["every day", "every week"]).ask(),
+        datetime.datetime.now().date() + datetime.timedelta(
+            days=int(questionary.text("\n How many Days do you want to keep up?", default='30').ask()))
     )
 
 
-def add_habit(name, periodicity):
+def add_habit(name, periodicity, target_day):
     """
     Adds a new habit to the Habit Tracker.
 
@@ -82,9 +108,10 @@ def add_habit(name, periodicity):
     Args:
         name (str): The name of the habit.
         periodicity (str): The periodicity of the habit (e.g., daily, weekly).
+        param target_day (Date): The target day of the habit.
     """
     manager = HabitManager(session)
-    manager.add_habit(name, periodicity)
+    manager.add_habit(name, periodicity, target_day)
     click.echo(f'Habit {name} added with periodicity {periodicity}.')
 
 
@@ -95,10 +122,22 @@ def complete_habit():
     This function prompts the user to enter the ID of the habit to be marked as
     complete, then updates the habit's completion status in the database.
     """
-    habit_id = questionary.text("Enter the ID of the habit to complete:").ask()
+
     manager = HabitManager(session)
-    manager.mark_habit_complete(habit_id)
-    click.echo(f'Habit with ID {habit_id} marked as complete.')
+    for item in manager.list_habits():
+        questionary.print("Habit: " + item.name +
+                          " | Habit ID: " + str(item.id) +
+                          " | Created on: " + str(item.created_at)
+                          , style='bold fg:ansiblue')
+
+    habit_id = questionary.text("Enter the ID of the habit to complete:").ask()
+    if not habit_id or not manager.get_habit_by_id(habit_id):
+        input("Invalid or no habit ID given.\n "
+              "Press any Key to continue...")
+        pass
+    else:
+        manager.mark_habit_complete(habit_id)
+        click.echo(f'Habit with ID {habit_id} marked as complete.')
 
 
 def list_habits():

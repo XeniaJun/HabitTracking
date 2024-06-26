@@ -1,6 +1,6 @@
 from sqlalchemy.orm import joinedload
 
-from db.DatabaseModule import Habit, Completion, Checkpoints
+from db.DatabaseModule import Habit, Completion, Checkpoint
 
 
 class HabitManager:
@@ -35,6 +35,8 @@ class HabitManager:
         new_habit = Habit(name=name, periodicity=periodicity, target_date=target_date)
         self.session.add(new_habit)
         self.session.commit()
+        new_habit = self.session.query(Habit).filter_by(name=name).first()
+        self.checkin_habit(habit=new_habit)
 
     def mark_habit_complete(self, habit_id):
         """
@@ -43,7 +45,9 @@ class HabitManager:
         Args:
             habit_id (int): The ID of the habit to mark as complete.
         """
-        completion = Completion(habit_id=habit_id)
+        checkpoint_status = self.session.query(Checkpoint).filter_by(habit_id=habit_id).first()
+        completion = Completion(habit_id=habit_id,
+                                completion_status="SUCCESSFULLY" if checkpoint_status.is_valid_streak else "FAILED")
         self.session.add(completion)
         self.session.commit()
 
@@ -66,10 +70,21 @@ class HabitManager:
         Returns:
             list: A list of all habits.
         """
-        return self.session.query(Habit).all()
+        return (self.session.query(Habit)
+                .outerjoin(Completion, Habit.id == Completion.habit_id)
+                .filter(Completion.habit_id == None)
+                .all())
 
     def get_habit_by_name(self, name):
         return self.session.query(Habit).filter_by(name=name).first()
 
     def get_habit_by_join(self):
-        return self.session.query(Habit).options(joinedload(Checkpoints.habit_id))
+        return self.session.query(Habit).options(joinedload(Checkpoint.habit_id))
+
+    def checkin_habit(self, habit):
+        checkpoint = Checkpoint(habit_id=habit.id)
+        self.session.add(checkpoint)
+        self.session.commit()
+
+    def get_habit_by_id(self, habit_id):
+        return self.session.query(Habit).filter_by(id=habit_id).first()

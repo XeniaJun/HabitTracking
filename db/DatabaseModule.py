@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, Column, Integer, String, DateTime, ForeignKey, Date
+from sqlalchemy import create_engine, Column, Integer, String, DateTime, ForeignKey, Date, Boolean
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, sessionmaker
 import datetime
@@ -42,11 +42,11 @@ class Completion(Base):
     id = Column(Integer, primary_key=True)
     habit_id = Column(Integer, ForeignKey('habits.id'))
     completion_status = Column(String, nullable=False)
-    completion_date = Column(DateTime, default=datetime.datetime.now(datetime.timezone.utc))
+    completion_date = Column(Date, default=datetime.datetime.now(datetime.timezone.utc).date())
     habit = relationship('Habit', back_populates='completions')
 
 
-class Checkpoints(Base):
+class Checkpoint(Base):
     """
     Represents a checkpoint for tracking progress on a habit.
 
@@ -61,9 +61,9 @@ class Checkpoints(Base):
     __tablename__ = 'checkpoints'
     id = Column(Integer, primary_key=True)
     habit_id = Column(Integer, ForeignKey('habits.id'))
-    last_checkpoint = Column(DateTime, default=datetime.datetime.now(datetime.timezone.utc))
-    current_checkpoint = Column(DateTime, default=datetime.datetime.now(datetime.timezone.utc))
-
+    last_checkpoint = Column(Date, default=datetime.datetime.now(datetime.timezone.utc))
+    current_checkpoint = Column(Date, default=datetime.datetime.now(datetime.timezone.utc))
+    is_valid_streak = Column(Boolean, default=True)
     habit = relationship('Habit', back_populates='checkpoints')
 
 
