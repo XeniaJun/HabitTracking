@@ -1,4 +1,6 @@
-from db.DatabaseModule import Habit, Completion
+from sqlalchemy.orm import joinedload
+
+from db.DatabaseModule import Habit, Completion, Checkpoints
 
 
 class HabitManager:
@@ -19,15 +21,18 @@ class HabitManager:
         """
         self.session = session
 
-    def add_habit(self, name, periodicity):
+    def add_habit(self, name, periodicity, target_date):
         """
         Adds a new habit to the database.
 
         Args:
             name (str): The name of the habit.
             periodicity (str): The periodicity of the habit.
+            :param name: The name of the habit.
+            :param periodicity: The periodicity of the habit.
+            :param target_date: The date the habit tracker should be finished.
         """
-        new_habit = Habit(name=name, periodicity=periodicity)
+        new_habit = Habit(name=name, periodicity=periodicity, target_date=target_date)
         self.session.add(new_habit)
         self.session.commit()
 
@@ -62,3 +67,9 @@ class HabitManager:
             list: A list of all habits.
         """
         return self.session.query(Habit).all()
+
+    def get_habit_by_name(self, name):
+        return self.session.query(Habit).filter_by(name=name).first()
+
+    def get_habit_by_join(self):
+        return self.session.query(Habit).options(joinedload(Checkpoints.habit_id))

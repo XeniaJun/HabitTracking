@@ -1,11 +1,14 @@
+import os
+
 import click
 import questionary
 
 from Habit import HabitManager
 from db.DatabaseModule import session
 
+
 # TODO: implement this with the already implemented AnalyticsModule.py. it still needs refactoring
-def get_statistics():
+def view_statistics():
     pass
 
 
@@ -18,6 +21,7 @@ def main_menue():
     The user is prompted to select an action, which is then executed.
     """
     while True:
+        clear_screen()
         choice = questionary.select(
             "Choose an action:",
             choices=[
@@ -30,6 +34,7 @@ def main_menue():
             ]
         ).ask()
 
+        clear_screen()
         if choice == "Create Habit":
             name = questionary.text("Name of habit", default="nothing").ask()
             periodicity = questionary.select("What do you want to add?",
@@ -42,20 +47,14 @@ def main_menue():
         elif choice == "Create Predefined Habit":
             predefined_habit()
         elif choice == "Habit statistics":
-            get_statistics()
+            view_statistics()
         elif choice == "Exit":
             print("Exiting the application.")
             break
 
 
-@click.group()
-def cli():
-    """
-    Command Line Interface (CLI) group for the Habit Tracker application.
-
-    This function is a placeholder for the Click CLI group decorator.
-    """
-    pass
+def clear_screen():
+    os.system('cls' if os.name == 'nt' else 'clear')
 
 
 def predefined_habit():
@@ -111,7 +110,8 @@ def list_habits():
     manager = HabitManager(session)
     habits = manager.list_habits()
     for habit in habits:
-        click.echo(f'Habit {habit.id}: {habit.name} - {habit.periodicity}')
+        click.echo(f'Habit {habit.id}: {habit.name} - {habit.periodicity} - created at: {habit.created_at}')
+    input("Press any Key to continue...")
 
 
 if __name__ == '__main__':

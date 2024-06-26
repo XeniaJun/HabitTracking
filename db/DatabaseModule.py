@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, Column, Integer, String, DateTime, ForeignKey
+from sqlalchemy import create_engine, Column, Integer, String, DateTime, ForeignKey, Date
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, sessionmaker
 import datetime
@@ -22,7 +22,9 @@ class Habit(Base):
     name = Column(String, nullable=False)
     periodicity = Column(String, nullable=False)
     created_at = Column(DateTime, default=datetime.datetime.today())
+    target_date = Column(Date, nullable=False)
     completions = relationship('Completion', back_populates='habit')
+    checkpoints = relationship('Checkpoint', back_populates='habit')
 
 
 class Completion(Base):
@@ -61,8 +63,8 @@ class Checkpoints(Base):
     habit_id = Column(Integer, ForeignKey('habits.id'))
     last_checkpoint = Column(DateTime, default=datetime.datetime.now(datetime.timezone.utc))
     current_checkpoint = Column(DateTime, default=datetime.datetime.now(datetime.timezone.utc))
+
     habit = relationship('Habit', back_populates='checkpoints')
-    completion = relationship('Completion', back_populates='habit')
 
 
 # Set up the database engine and create all tables

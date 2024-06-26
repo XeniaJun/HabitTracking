@@ -4,7 +4,8 @@ classDiagram
         String name
         String periodicity
         DateTime created_at
-        +add_habit(name, periodicity)
+        Date target_date
+        +add_habit(name, periodicity, target_date)
         +mark_habit_complete(habit_id)
         +get_habit(habit_id)
         +list_habits()
