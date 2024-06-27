@@ -1,3 +1,7 @@
+import datetime
+
+import questionary
+from sqlalchemy import func
 from sqlalchemy.orm import joinedload
 
 from db.DatabaseModule import Habit, Completion, Checkpoint
@@ -35,8 +39,13 @@ class HabitManager:
         new_habit = Habit(name=name, periodicity=periodicity, target_date=target_date)
         self.session.add(new_habit)
         self.session.commit()
-        new_habit = self.session.query(Habit).filter_by(name=name).first()
-        self.checkin_habit(habit=new_habit)
+
+    def is_running_habit_streak(self, habit: int):
+        checkpoint = self.session.query(Checkpoint).filter_by(habit_id=habit).first()
+        if checkpoint is not None and checkpoint.is_valid_streak:
+            return True
+        elif checkpoint is None:
+            return False
 
     def mark_habit_complete(self, habit_id):
         """
@@ -81,10 +90,31 @@ class HabitManager:
     def get_habit_by_join(self):
         return self.session.query(Habit).options(joinedload(Checkpoint.habit_id))
 
-    def checkin_habit(self, habit):
-        checkpoint = Checkpoint(habit_id=habit.id)
-        self.session.add(checkpoint)
-        self.session.commit()
+    def checkin_habit(self, habit: int):
+        if self.is_running_habit_streak(habit):
+            checkpoint = self.session.query(Checkpoint).filter_by(habit_id=habit).first()
+            habit_target_date = self.session.query(Habit).filter_by(id=habit).first().target_date
+
+            checkpoint.is_valid_streak = True if ((func.julijulianday(checkpoint.current_checkpoint) -
+                                                  func.julijulianday(checkpoint.last_checkpoint) == 1) and
+                                                  checkpoint.is_valid_streak) else False
+            checkpoint.last_checkpoint = checkpoint.current_checkpoint
+            checkpoint.current_checkpoint = datetime.date.today()
+            checkpoint.next_checkpoint = datetime.date.today() if habit_target_date > datetime.date.today() else None
+            self.session.commit()
+        else:
+            checkpoint = self.session.query(Checkpoint).filter_by(habit_id=habit).first()
+            if checkpoint is None:
+                checkpoint = Checkpoint(habit_id=habit)
+                self.session.add(checkpoint)
+                self.session.commit()
+            else:
+                questionary.print("this Habit broke the streak, due to missing checkpoint."
+                                  , style='bold fg:red')
 
     def get_habit_by_id(self, habit_id):
         return self.session.query(Habit).filter_by(id=habit_id).first()
+
+    def delete_checkpoints_for_completed_habit(self, habit_id):
+        self.session.query(Checkpoint).filter(Checkpoint.habit_id == habit_id).delete()
+        self.session.commit()

@@ -21,7 +21,7 @@ class Habit(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
     periodicity = Column(String, nullable=False)
-    created_at = Column(DateTime, default=datetime.datetime.today())
+    created_at = Column(Date, default=datetime.datetime.today().date())
     target_date = Column(Date, nullable=False)
     completions = relationship('Completion', back_populates='habit')
     checkpoints = relationship('Checkpoint', back_populates='habit')
@@ -61,8 +61,10 @@ class Checkpoint(Base):
     __tablename__ = 'checkpoints'
     id = Column(Integer, primary_key=True)
     habit_id = Column(Integer, ForeignKey('habits.id'))
-    last_checkpoint = Column(Date, default=datetime.datetime.now(datetime.timezone.utc))
-    current_checkpoint = Column(Date, default=datetime.datetime.now(datetime.timezone.utc))
+    last_checkpoint = Column(Date, default=datetime.datetime.now(datetime.timezone.utc).date())
+    current_checkpoint = Column(Date, default=datetime.datetime.now(datetime.timezone.utc).date())
+    next_checkpoint = Column(Date, default=datetime.datetime.now(datetime.timezone.utc).date() +
+                                           datetime.timedelta(days=int(1)))
     is_valid_streak = Column(Boolean, default=True)
     habit = relationship('Habit', back_populates='checkpoints')
 

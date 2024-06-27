@@ -5,6 +5,7 @@ import click
 import questionary
 from prompt_toolkit.styles import Style
 
+import AnalyticsModule
 from Habit import HabitManager
 from db.DatabaseModule import session, Habit
 
@@ -16,19 +17,21 @@ def view_statistics():
         "Statistic Menu:",
         choices=[
             "get longest streak",
-            "Create Habit",
-            "Read Items",
-            "Complete habit",
-            "Create Predefined Habit",
-            "Habit statistics",
-            "Exit"
         ]
     ).ask()
+    AnalyticsModule.get_longest_streak()
     pass
 
 
 def set_milestone_for_habit():
-    list_habits()
+    print_habits_as_list()
+    answer = questionary.text("type Habit ID -  to do check in:").ask()
+    exit_text = "wrong input character given. ID is not valid."
+    if answer.isdigit():
+        manager = HabitManager(session)
+        manager.checkin_habit(int(answer))
+        exit_text = "Press any Key to continue..."
+    input(exit_text)
 
 
 def main_menue():
@@ -63,7 +66,8 @@ def main_menue():
         elif choice == "Checkin Habit streak":
             set_milestone_for_habit()
         elif choice == "Read Items":
-            list_habits()
+            print_habits_as_list()
+            input("Press any Key to continue...")
         elif choice == "Complete habit":
             complete_habit()
         elif choice == "Create Predefined Habit":
@@ -138,6 +142,13 @@ def complete_habit():
     else:
         manager.mark_habit_complete(habit_id)
         click.echo(f'Habit with ID {habit_id} marked as complete.')
+        manager.delete_checkpoints_for_completed_habit(habit_id)
+
+
+def print_habits_as_list():
+    habits = list_habits()
+    for habit in habits:
+        click.echo(f'Habit {habit.id}: {habit.name} - {habit.periodicity} - created at: {habit.created_at}')
 
 
 def list_habits():
@@ -148,9 +159,7 @@ def list_habits():
     """
     manager = HabitManager(session)
     habits = manager.list_habits()
-    for habit in habits:
-        click.echo(f'Habit {habit.id}: {habit.name} - {habit.periodicity} - created at: {habit.created_at}')
-    input("Press any Key to continue...")
+    return habits
 
 
 if __name__ == '__main__':
