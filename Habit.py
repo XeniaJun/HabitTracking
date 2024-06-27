@@ -59,8 +59,13 @@ class HabitManager:
             habit_id (int): The ID of the habit to mark as complete.
         """
         checkpoint_status = self.session.query(Checkpoint).filter_by(habit_id=habit_id).first()
-        completion = Completion(habit_id=habit_id,
-                                completion_status="SUCCESSFULLY" if checkpoint_status.is_valid_streak else "FAILED")
+        habit = self.session.query(Habit).filter_by(id=habit_id).first()
+        if checkpoint_status is not None:
+            completion = Completion(habit_id=habit_id,
+                                    completion_status="SUCCESSFULLY" if checkpoint_status.is_valid_streak else "FAILED")
+        else:
+            completion = Completion(habit_id=habit_id,
+                                    completion_status="ABORTED")
         self.session.add(completion)
         self.session.commit()
 

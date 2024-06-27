@@ -10,7 +10,6 @@ from Habit import HabitManager
 from db.DatabaseModule import session, Habit
 
 
-# TODO: implement this with the already implemented AnalyticsModule.py. it still needs refactoring
 def view_statistics():
     clear_screen()
     choice = questionary.select(
@@ -72,7 +71,7 @@ def main_menue():
         ).ask()
         if choice == "Create Habit":
             name = questionary.text("Name of habit", default="nothing").ask()
-            periodicity = questionary.select("\nWhat do you want to add?",
+            periodicity = questionary.select("\nHow often do you want to check in your progress?",
                                              choices=["every day", "every week"]).ask()
             target_duration_in_days = questionary.text("\n How many Days do you want to keep up?", default='30').ask()
             target_date = datetime.datetime.now().date() + datetime.timedelta(days=int(target_duration_in_days))
@@ -109,7 +108,7 @@ def predefined_habit():
     add_habit(
         questionary.select("Choose a predefined habit!",
                            choices=["Nail biting", "smoking", "eating sugar", "doing drugs", "drinking alcohol"]).ask(),
-        questionary.select("How often do you want to set checkpoints?",
+        questionary.select("How often do you want to check in your progress?",
                            choices=["every day", "every week"]).ask(),
         datetime.datetime.now().date() + datetime.timedelta(
             days=int(questionary.text("\n How many Days do you want to keep up?", default='30').ask()))
