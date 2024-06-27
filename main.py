@@ -19,8 +19,23 @@ def view_statistics():
             "get longest streak",
         ]
     ).ask()
-    AnalyticsModule.get_longest_streak()
-    pass
+    manager = HabitManager(session)
+    if choice == "get longest streak":
+        longest_streak = AnalyticsModule.analyze_habits(manager)
+
+        # Print the result in a readable format
+        print("Analysis Result:")
+        print(f"Longest Streak: {longest_streak['longest_streak']}")
+        print("Daily Habits:")
+        for habit in longest_streak['daily_habits']:
+            print(f" - {habit.name} (ID: {habit.id})")
+        print("Weekly Habits:")
+        for habit in longest_streak['weekly_habits']:
+            print(f" - {habit.name} (ID: {habit.id})")
+            #questionary.print("" + item.
+            #                  , style='bold fg:red')
+    input("Press any Key to continue...")
+
 
 
 def set_milestone_for_habit():
