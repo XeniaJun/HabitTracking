@@ -37,7 +37,6 @@ def view_statistics():
     input("Press any Key to continue...")
 
 
-
 def set_milestone_for_habit():
     print_habits_as_list()
     answer = questionary.text("type Habit ID -  to do check in:").ask()
@@ -150,7 +149,9 @@ def complete_habit():
                           , style='bold fg:ansiblue')
 
     habit_id = questionary.text("Enter the ID of the habit to complete:").ask()
-    if not habit_id or not manager.get_habit_by_id(habit_id):
+    if (not habit_id.isdigit() or
+            (manager.get_completed_habit_by_habit_id(habit_id) is not None
+             and manager.get_habit_by_id(habit_id) is not None)):
         input("Invalid or no habit ID given.\n "
               "Press any Key to continue...")
         pass

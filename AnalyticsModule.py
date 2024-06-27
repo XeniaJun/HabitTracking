@@ -81,8 +81,8 @@ def analyze_habits(habit_manager):
 
     return {
         'longest_streak': longest_streak,
-        'daily_habits': habits_by_periodicity.get('daily', []),
-        'weekly_habits': habits_by_periodicity.get('weekly', [])
+        'daily_habits': habits_by_periodicity.get('every day', []),
+        'weekly_habits': habits_by_periodicity.get('every week', [])
 
     }
 

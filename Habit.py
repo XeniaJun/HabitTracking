@@ -121,6 +121,9 @@ class HabitManager:
     def get_habit_by_id(self, habit_id):
         return self.session.query(Habit).filter_by(id=habit_id).first()
 
+    def get_completed_habit_by_habit_id(self, habit_id):
+        return self.session.query(Completion).filter_by(habit_id=habit_id).first()
+
     def delete_checkpoints_for_completed_habit(self, habit_id):
         self.session.query(Checkpoint).filter(Checkpoint.habit_id == habit_id).delete()
         self.session.commit()
