@@ -1,10 +1,14 @@
 import datetime
 
 import questionary
-from sqlalchemy import func
+from sqlalchemy import func, Integer, cast
 from sqlalchemy.orm import joinedload
 
 from db.DatabaseModule import Habit, Completion, Checkpoint
+
+
+def get_date_differenz(current_checkpoint, last_checkpoint):
+    return (current_checkpoint - last_checkpoint).days
 
 
 class HabitManager:
@@ -95,9 +99,11 @@ class HabitManager:
             checkpoint = self.session.query(Checkpoint).filter_by(habit_id=habit).first()
             habit_target_date = self.session.query(Habit).filter_by(id=habit).first().target_date
 
-            checkpoint.is_valid_streak = True if ((func.julijulianday(checkpoint.current_checkpoint) -
-                                                  func.julijulianday(checkpoint.last_checkpoint) == 1) and
-                                                  checkpoint.is_valid_streak) else False
+            checkpoint.is_valid_streak = True if ((get_date_differenz(checkpoint.current_checkpoint,
+                                                                      checkpoint.last_checkpoint) == 1
+                                                   or get_date_differenz(checkpoint.current_checkpoint,
+                                                                         checkpoint.last_checkpoint) == 0)
+                                                  and checkpoint.is_valid_streak) else False
             checkpoint.last_checkpoint = checkpoint.current_checkpoint
             checkpoint.current_checkpoint = datetime.date.today()
             checkpoint.next_checkpoint = datetime.date.today() if habit_target_date > datetime.date.today() else None

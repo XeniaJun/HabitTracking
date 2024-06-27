@@ -74,7 +74,7 @@ def main_menue():
         if choice == "Create Habit":
             name = questionary.text("Name of habit", default="nothing").ask()
             periodicity = questionary.select("\nWhat do you want to add?",
-                                             choices=["daily", "weekly"]).ask()
+                                             choices=["every day", "every week"]).ask()
             target_duration_in_days = questionary.text("\n How many Days do you want to keep up?", default='30').ask()
             target_date = datetime.datetime.now().date() + datetime.timedelta(days=int(target_duration_in_days))
             add_habit(name, periodicity, target_date)
@@ -109,7 +109,7 @@ def predefined_habit():
     """
     add_habit(
         questionary.select("Choose a predefined habit!",
-                           choices=["Nail biting", "smoking", "eating sugar"]).ask(),
+                           choices=["Nail biting", "smoking", "eating sugar", "doing drugs", "drinking alcohol"]).ask(),
         questionary.select("How often do you want to set checkpoints?",
                            choices=["every day", "every week"]).ask(),
         datetime.datetime.now().date() + datetime.timedelta(
