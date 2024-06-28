@@ -27,12 +27,10 @@ def view_statistics():
         print(f"Longest Streak: {longest_streak['longest_streak']}")
         print("Daily Habits:")
         for habit in longest_streak['daily_habits']:
-            print(f" - {habit.name} (ID: {habit.id})")
+            questionary.print(" - "+habit.name + "(ID: " + str(habit.id) + ")", style='bold fg:ansiblue')
         print("Weekly Habits:")
         for habit in longest_streak['weekly_habits']:
-            print(f" - {habit.name} (ID: {habit.id})")
-            #questionary.print("" + item.
-            #                  , style='bold fg:red')
+            questionary.print(" - "+habit.name + "(ID: " + str(habit.id) + ")", style='bold fg:ansiblue')
     input("Press any Key to continue...")
 
 
