@@ -21,7 +21,7 @@ Habit Tracker is a command-line application to help users manage their habits. U
 
 1. Clone the repository:
    ```sh
-   git clone https://github.com/XeniaJun/habit-tracker.git
+   git clone git@github.com:XeniaJun/HabitTracking.git
    cd habit-tracker
    ```
    
