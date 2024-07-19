@@ -1,5 +1,10 @@
 from collections import defaultdict
 
+from sqlalchemy import func
+
+from Habit import HabitManager
+from db.DatabaseModule import session
+
 
 def get_longest_streak(habits):
     """
@@ -14,7 +19,7 @@ def get_longest_streak(habits):
         int: The length of the longest completion streak.
     """
 
-    def calculate_streak(completions):
+    def calculate_streak(habit):
         """
         Helper function to calculate the streak from a list of completion dates.
 
@@ -24,23 +29,16 @@ def get_longest_streak(habits):
         Returns:
             int: The longest streak of consecutive completions.
         """
-        if not completions:
-            return 0
+        manager = HabitManager(session)
+        completion = manager.get_completed_habit_by_habit_id(habit.id)
+        checkpoints = manager.get_checkpoint_by_habit_id(habit.id)
 
-        streak = max_streak = 1
-        for i in range(1, len(completions)):
-            if (completions[i] - completions[i - 1]).days == 1:
-                streak += 1
-                max_streak = max(max_streak, streak)
-            else:
-                streak = 1
-        return max_streak
+        return checkpoints.current_checkpoint - habit.created_at
 
-    return max(
-        (calculate_streak(sorted(comp.completion_date for comp in habit.completions))
-         for habit in habits),
-        default=0
-    )
+    streak_array = []
+    for habit in habits:
+        streak_array.append(calculate_streak(habit))
+    return max(streak_array)
 
 
 def get_habits_by_periodicity(habits, periodicity):
@@ -85,4 +83,3 @@ def analyze_habits(habit_manager):
         'weekly_habits': habits_by_periodicity.get('every week', [])
 
     }
-
