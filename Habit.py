@@ -1,7 +1,6 @@
 import datetime
 
 import questionary
-from sqlalchemy import func, Integer, cast
 from sqlalchemy.orm import joinedload
 
 from db.DatabaseModule import Habit, Completion, Checkpoint

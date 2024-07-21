@@ -22,7 +22,7 @@ class Habit(Base):
     name = Column(String, nullable=False)
     periodicity = Column(String, nullable=False)
     created_at = Column(Date, default=datetime.datetime.today().date())
-    target_date = Column(Date, nullable=False)
+    target_date = Column(Date, nullable=True)
     completions = relationship('Completion', back_populates='habit')
     checkpoints = relationship('Checkpoint', back_populates='habit')
 

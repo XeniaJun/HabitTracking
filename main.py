@@ -3,11 +3,11 @@ import os
 
 import click
 import questionary
-from prompt_toolkit.styles import Style
 
 import AnalyticsModule
 from Habit import HabitManager
-from db.DatabaseModule import session, Habit
+from db.DatabaseModule import session
+from db.initialize_db import initialize_database
 
 
 def view_statistics():
@@ -27,10 +27,10 @@ def view_statistics():
         print(f"Longest Streak: {longest_streak['longest_streak']}")
         print("Daily Habits:")
         for habit in longest_streak['daily_habits']:
-            questionary.print(" - "+habit.name + "(ID: " + str(habit.id) + ")", style='bold fg:ansiblue')
+            questionary.print(" - " + habit.name + "(ID: " + str(habit.id) + ")", style='bold fg:ansiblue')
         print("Weekly Habits:")
         for habit in longest_streak['weekly_habits']:
-            questionary.print(" - "+habit.name + "(ID: " + str(habit.id) + ")", style='bold fg:ansiblue')
+            questionary.print(" - " + habit.name + "(ID: " + str(habit.id) + ")", style='bold fg:ansiblue')
     input("Press any Key to continue...")
 
 
@@ -71,8 +71,11 @@ def main_menue():
             name = questionary.text("Name of habit", default="nothing").ask()
             periodicity = questionary.select("\nHow often do you want to check in your progress?",
                                              choices=["every day", "every week"]).ask()
-            target_duration_in_days = questionary.text("\n How many Days do you want to keep up?", default='30').ask()
-            target_date = datetime.datetime.now().date() + datetime.timedelta(days=int(target_duration_in_days))
+            target_duration_in_days = questionary.text("\n How many Days do you want to keep up?(optional)",
+                                                       default='').ask()
+            target_date = datetime.datetime.now().date() + datetime.timedelta(days=int(target_duration_in_days)) if (
+                    target_duration_in_days != "") \
+                else datetime.datetime.max.date()
             add_habit(name, periodicity, target_date)
         elif choice == "Checkin Habit streak":
             set_milestone_for_habit()
@@ -108,8 +111,7 @@ def predefined_habit():
                            choices=["Nail biting", "smoking", "eating sugar", "doing drugs", "drinking alcohol"]).ask(),
         questionary.select("How often do you want to check in your progress?",
                            choices=["every day", "every week"]).ask(),
-        datetime.datetime.now().date() + datetime.timedelta(
-            days=int(questionary.text("\n How many Days do you want to keep up?", default='30').ask()))
+        questionary.text("\n How many Days do you want to keep up?").ask()
     )
 
 
@@ -125,9 +127,13 @@ def add_habit(name, periodicity, target_day):
         periodicity (str): The periodicity of the habit (e.g., daily, weekly).
         param target_day (Date): The target day of the habit.
     """
+    optional_target = datetime.datetime.max.date() if (
+            target_day == "" or not
+    str.isdigit(target_day)) else (
+            datetime.datetime.now().date() + datetime.timedelta(target_day))
     manager = HabitManager(session)
-    manager.add_habit(name, periodicity, target_day)
-    click.echo(f'Habit {name} added with periodicity {periodicity}.')
+    manager.add_habit(name, periodicity, optional_target)
+    click.echo(f'Habit: {name} added with periodicity: {periodicity}.')
 
 
 def complete_habit():
@@ -176,4 +182,6 @@ def list_habits():
 
 
 if __name__ == '__main__':
+    initialize_database()
+
     main_menue()

@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "habit_id": 7,
+    "last_checkpoint": "2024-07-18",
+    "current_checkpoint": "2024-07-19",
+    "next_checkpoint": "2024-07-20",
+    "is_valid_streak": 1
+  },
+  {
+    "id": 2,
+    "habit_id": 8,
+    "last_checkpoint": "2024-07-18",
+    "current_checkpoint": "2024-07-19",
+    "next_checkpoint": "2024-07-20",
+    "is_valid_streak": 1
+  },
+  {
+    "id": 3,
+    "habit_id": 9,
+    "last_checkpoint": "2024-07-18",
+    "current_checkpoint": "2024-07-19",
+    "next_checkpoint": "2024-07-20",
+    "is_valid_streak": 1
+  }
+]
