@@ -8,7 +8,7 @@ Habit Tracker is a command-line application to help users manage their habits. U
 - List all existing habits
 - Mark habits as complete
 - Create predefined habits
-- Interactive CLI interface
+- Interactive CLI interface s
 
 ## Requirements
 
