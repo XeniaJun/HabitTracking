@@ -24,13 +24,16 @@ def view_statistics():
 
         # Print the result in a readable format
         print("Analysis Result:")
-        print(f"Longest Streak: {longest_streak['longest_streak']}")
-        print("Daily Habits:")
+        print("\nlongest streak from historical data:")
+        questionary.print("\t " + str(longest_streak['longest total streak']) + " Days ", style='bold fg:ansiblue')
+        print("\nLongest Streak:")
+        questionary.print("\t " + str(longest_streak['longest ongoing streak']) + " Days ", style='bold fg:ansiblue')
+        print("Daily ongoing Habits:")
         for habit in longest_streak['daily_habits']:
-            questionary.print(" - " + habit.name + "(ID: " + str(habit.id) + ")", style='bold fg:ansiblue')
-        print("Weekly Habits:")
+            questionary.print("\t- " + habit.name + "(ID: " + str(habit.id) + ")", style='bold fg:ansiblue')
+        print("Weekly ongoing Habits:")
         for habit in longest_streak['weekly_habits']:
-            questionary.print(" - " + habit.name + "(ID: " + str(habit.id) + ")", style='bold fg:ansiblue')
+            questionary.print("\t- " + habit.name + "(ID: " + str(habit.id) + ")", style='bold fg:ansiblue')
     input("Press any Key to continue...")
 
 
@@ -70,13 +73,10 @@ def main_menue():
         if choice == "Create Habit":
             name = questionary.text("Name of habit", default="nothing").ask()
             periodicity = questionary.select("\nHow often do you want to check in your progress?",
-                                             choices=["every day", "every week"]).ask()
+                                             choices=["daily", "weekly"]).ask()
             target_duration_in_days = questionary.text("\n How many Days do you want to keep up?(optional)",
                                                        default='').ask()
-            target_date = datetime.datetime.now().date() + datetime.timedelta(days=int(target_duration_in_days)) if (
-                    target_duration_in_days != "") \
-                else datetime.datetime.max.date()
-            add_habit(name, periodicity, target_date)
+            create_habit(name, periodicity, target_duration_in_days)
         elif choice == "Checkin Habit streak":
             set_milestone_for_habit()
         elif choice == "Read Items":
@@ -106,16 +106,16 @@ def predefined_habit():
     This function prompts the user to select a predefined habit and its
     periodicity, then adds the habit using the add_habit function.
     """
-    add_habit(
+    create_habit(
         questionary.select("Choose a predefined habit!",
                            choices=["Nail biting", "smoking", "eating sugar", "doing drugs", "drinking alcohol"]).ask(),
         questionary.select("How often do you want to check in your progress?",
-                           choices=["every day", "every week"]).ask(),
+                           choices=["daily", "weekly"]).ask(),
         questionary.text("\n How many Days do you want to keep up?").ask()
     )
 
 
-def add_habit(name, periodicity, target_day):
+def create_habit(name, periodicity, target_day):
     """
     Adds a new habit to the Habit Tracker.
 
@@ -123,16 +123,17 @@ def add_habit(name, periodicity, target_day):
     then adds it to the database.
 
     Args:
+        target_day:
         name (str): The name of the habit.
         periodicity (str): The periodicity of the habit (e.g., daily, weekly).
         param target_day (Date): The target day of the habit.
     """
-    optional_target = datetime.datetime.max.date() if (
-            target_day == "" or not
-    str.isdigit(target_day)) else (
-            datetime.datetime.now().date() + datetime.timedelta(target_day))
+    target_day = datetime.datetime.max.date() if \
+        (target_day == "" or not str.isdigit(target_day)) else \
+        (datetime.datetime.now().date() + datetime.timedelta(target_day))
+
     manager = HabitManager(session)
-    manager.add_habit(name, periodicity, optional_target)
+    manager.add_habit(name, periodicity, target_day)
     click.echo(f'Habit: {name} added with periodicity: {periodicity}.')
 
 
@@ -159,7 +160,7 @@ def complete_habit():
               "Press any Key to continue...")
         pass
     else:
-        manager.mark_habit_complete(habit_id)
+        manager.complete_habit(habit_id)
         click.echo(f'Habit with ID {habit_id} marked as complete.')
         manager.delete_checkpoints_for_completed_habit(habit_id)
 
