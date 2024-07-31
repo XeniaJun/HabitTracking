@@ -2,64 +2,64 @@
   {
     "id": 1,
     "name": "Fleisch essen",
-    "periodicity": "every day",
-    "created_at": "2024-06-27",
-    "target_date": "2024-07-27"
+    "periodicity": "daily",
+    "created_at": "2024-07-07",
+    "target_date": "9999-12-31"
   },
   {
     "id": 2,
     "name": "drinking alcohol",
-    "periodicity": "every day",
+    "periodicity": "daily",
     "created_at": "2024-06-27",
     "target_date": "2024-07-27"
   },
   {
     "id": 3,
     "name": "laziness",
-    "periodicity": "every day",
-    "created_at": "2024-06-27",
+    "periodicity": "daily",
+    "created_at": "2022-06-27",
     "target_date": "2024-07-27"
   },
   {
     "id": 4,
     "name": "eating sugar",
-    "periodicity": "every week",
+    "periodicity": "weekly",
     "created_at": "2024-06-27",
     "target_date": "2024-07-27"
   },
   {
     "id": 5,
     "name": "eating sugar",
-    "periodicity": "every day",
+    "periodicity": "daily",
     "created_at": "2024-06-27",
     "target_date": "2024-07-27"
   },
   {
     "id": 6,
     "name": "Nail biting",
-    "periodicity": "every day",
-    "created_at": "2024-06-27",
+    "periodicity": "daily",
+    "created_at": "2023-06-27",
     "target_date": "2024-07-27"
   },
   {
     "id": 7,
     "name": "Nail biting",
-    "periodicity": "every day",
+    "periodicity": "daily",
     "created_at": "2024-05-20",
-    "target_date": "2024-07-27"
+    "target_date": "2024-08-02"
   },
   {
     "id": 8,
-    "name": "nothing",
-    "periodicity": "every day",
+    "name": "eating chips",
+    "periodicity": "weekly",
     "created_at": "2024-06-27",
-    "target_date": "2024-07-28"
+    "target_date": "2024-08-28"
   },
   {
     "id": 9,
-    "name": "",
-    "periodicity": "every day",
-    "created_at": "2024-07-02",
+    "name": "going sleeping early",
+    "periodicity": "daily",
+    "created_at": "2023-07-02",
     "target_date": "2024-08-02"
   }
 ]
