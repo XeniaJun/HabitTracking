@@ -170,16 +170,14 @@ class HabitManager:
             checkpoint.is_valid_streak = streak_is_valid(checkpoint.next_checkpoint, checkpoint.current_checkpoint)
             checkpoint.last_checkpoint = checkpoint.current_checkpoint
             checkpoint.current_checkpoint = datetime.date.today()
-            respected_checkpoint = set_checkpoint(datetime.datetime.now().date(), habit.periodicity)
-            condition = habit_target_date > datetime.datetime.now().date()
             checkpoint.next_checkpoint = set_checkpoint(datetime.datetime.now().date(), habit.periodicity) if (
                     habit_target_date > datetime.datetime.now().date()) else None
             self.session.commit()
         else:
-            checkpoint = self.session.query(Checkpoint).filter_by(habit_id=habit).first()
+            checkpoint = self.get_checkpoint_by_habit_id(habit.id)
             if checkpoint is None:
-                checkpoint = Checkpoint(habit_id=habit, next_checkpoint=set_checkpoint(datetime.datetime.now().date(),
-                                                                                       habit.periodicity))
+                checkpoint = Checkpoint(habit_id=habit.id, next_checkpoint=set_checkpoint(
+                    datetime.datetime.now().date(), habit.periodicity))
                 self.session.add(checkpoint)
                 self.session.commit()
             else:

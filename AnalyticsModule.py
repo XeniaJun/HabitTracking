@@ -35,9 +35,9 @@ def get_longest_streak(habits, range):
         days = 0
         match range:
             case "ongoing":
-                days = calculate_days(habit.created_at, checkpoint.current_checkpoint)
+                days += calculate_days(habit.created_at, checkpoint.current_checkpoint)
             case "total":
-                days = calculate_days(habit.created_at, completion.completion_date)
+                days += calculate_days(habit.created_at, completion.completion_date)
 
         return days
 
