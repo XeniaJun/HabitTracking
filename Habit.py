@@ -3,7 +3,7 @@ import datetime
 import questionary
 from sqlalchemy import select
 
-import AnalyticsModule
+import analytics_module
 from db.DatabaseModule import Habit, Completion, Checkpoint
 
 
@@ -12,20 +12,24 @@ def get_date_differenz(current_checkpoint, last_checkpoint):
 
 
 def set_checkpoint(base_date, periodicity):
-    time_to_add = datetime.timedelta(days=1) if periodicity == "daily" else datetime.timedelta(weeks=1)
+    time_to_add = datetime.timedelta(days=1) if periodicity == "daily" \
+        else datetime.timedelta(weeks=1)
     return base_date + time_to_add
 
 
 def streak_is_valid(next_checkpoint, current_checkpoint):
-    return True if next_checkpoint >= datetime.datetime.now().date() >= current_checkpoint else False
+    return True if next_checkpoint >= datetime.datetime.now().date() >= current_checkpoint \
+        else False
 
 
 def print_list(headline, broken_habits):
     questionary.print(headline, style='bold fg:darkred')
     for broken_habit in broken_habits:
         questionary.print(
-            " - " + broken_habit.name + "(ID: " + str(broken_habit.id) + "), after " + str(AnalyticsModule.get_streak(
-                broken_habit.id, broken_habit.completions[0].completion_date)) + " sucessfull Days", style='bold fg:ansiblue')
+            " - " + broken_habit.name + "(ID: " + str(broken_habit.id) + "), after "
+            + str(analytics_module.get_streak(
+                broken_habit, broken_habit.completions[0].completion_date)) +
+            " sucessfull Days", style='bold fg:ansiblue')
     input("Press any Key to continue...")
 
 
@@ -62,9 +66,9 @@ class HabitManager:
         self.session.add(new_habit)
         self.session.commit()
         self.checkin_habit(new_habit.id)
-        print(f'Inserted new habit_id: {new_habit.id} ,habit {new_habit.name}, Periodicity: {new_habit.periodicity}, '
-              f'target date: {target_date}')
-        print(f'done')
+        print(f'Inserted new habit_id: {new_habit.id} ,habit {new_habit.name}, '
+              f'Periodicity: {new_habit.periodicity}, 'f'target date: {target_date}')
+        print('done')
 
     def has_checkpoint(self, habit: int):
         """
@@ -129,10 +133,9 @@ class HabitManager:
         Args:
             habit_status:
         """
-        habit_list = self.list_habits()
         result = []
         if habit_status == "completed":
-            completed = self.get_completed_habits()
+            result = self.get_completed_habits()
         elif habit_status == "running":
             result = self.get_ongoing_habits()
         else:
@@ -205,7 +208,7 @@ class HabitManager:
         for habit in ongoing_habits:
             checkpoint = habit.checkpoints[0]
             if checkpoint is None or not streak_is_valid(checkpoint.next_checkpoint, checkpoint.current_checkpoint):
-                result = self.delete_checkpoint(checkpoint)
+                self.delete_checkpoint(checkpoint)
                 broken_habits.append(habit)
                 self.session.commit()
                 self.complete_habit(habit.id)

@@ -9,7 +9,7 @@ from main import view_statistics, set_milestone_for_habit, clear_screen, create_
 class TestHabitTracker(unittest.TestCase):
 
     @patch('main.questionary.select')
-    @patch('main.AnalyticsModule.analyze_habits')
+    @patch('main.analytics_module.analyze_habits')
     def test_view_statistics(self, mock_analyze_habits, mock_select):
         mock_select.return_value.ask.return_value = "get longest streak"
         mock_analyze_habits.return_value = {

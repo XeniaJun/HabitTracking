@@ -1,16 +1,15 @@
 from collections import defaultdict
 
-from Habit import HabitManager
-from db.DatabaseModule import session
 
-
-def get_longest_streak(habits, range):
+def get_longest_streak(habits, range_streak):
     """
     Calculates the longest streak of habit completions.
 
-    This function takes a list of habits and determines the longest streak of consecutive completions for any habit.
+    This function takes a list of habits and determines
+    the longest streak of consecutive completions for any habit.
 
     Args:
+        range_streak:
         habits (list): A list of Habit objects.
 
     Returns:
@@ -27,11 +26,8 @@ def get_longest_streak(habits, range):
         Returns:
             int: The longest streak of consecutive completions.
         """
-        manager = HabitManager(session)
-        #completion = habit.completions[0]
-        #checkpoint = habit.checkpoints[0]
         days = 0
-        if range == "ongoing":
+        if range_streak == "ongoing":
             days += calculate_days(habit.created_at, habit.checkpoints[0].current_checkpoint)
         else:
             # case "total"
@@ -49,7 +45,8 @@ def analyze_habits(habit_manager):
     """
     Analyzes the habits and provides various insights.
 
-    This function uses the habit manager to list all habits and then calculates the longest streak of completions,
+    This function uses the habit manager to list all habits and
+    then calculates the longest streak of completions,
     and categorizes habits by their periodicity (daily or weekly).
 
     Args:
@@ -79,7 +76,5 @@ def calculate_days(started, completed):
     return (completed - started).days if completed > started else 0
 
 
-def get_streak(habit_id, compare_date):
-    manager = HabitManager(session)
-    habit = manager.get_habit_by_id(habit_id)
+def get_streak(habit, compare_date):
     return calculate_days(started=habit.created_at, completed=compare_date)

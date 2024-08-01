@@ -11,10 +11,11 @@ user-friendly CLI interface.
 - Mark habits as complete
 - Create predefined habits
 - Interactive CLI interface
+- Habit metrics
 
 ## Requirements
 
-- Python 3.7 or later
+- Python 3.8 or later
 - SQLAlchemy
 - Click
 - Questionary
@@ -24,7 +25,7 @@ user-friendly CLI interface.
 1. Clone the repository:
    ```sh
    git clone git@github.com:XeniaJun/HabitTracking.git
-   cd habit-tracker
+   cd HabitTracking
    ```
 
 2. Create a virtual environment and activate it:
@@ -82,9 +83,10 @@ classDiagram
 
 ## Code Structure
 
-- **main.py**: The main entry point for the CLI application.
-- **Habit.py**: Contains the HabitManager class for managing habits.
 - **db/DatabaseModule.py**: Database models and session setup.
+- **main.py**: The main entry point for the CLI application.
+- **Habit.py**: Controller  for managing habits.
+- **analytics_module.py**: Controller for managing metrics like the calculation of the longest streak.
 
 ## Sequence Diagramm
 

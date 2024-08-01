@@ -4,7 +4,7 @@ import os
 import click
 import questionary
 
-import AnalyticsModule
+import analytics_module
 from Habit import HabitManager
 from db.DatabaseModule import session
 from db.initialize_db import initialize_database
@@ -20,7 +20,7 @@ def view_statistics():
     ).ask()
     manager = HabitManager(session)
     if choice == "get longest streak":
-        longest_streak = AnalyticsModule.analyze_habits(manager)
+        longest_streak = analytics_module.analyze_habits(manager)
 
         # Print the result in a readable format
         print("Analysis Result:")
@@ -31,12 +31,12 @@ def view_statistics():
         print("Daily ongoing Habits:")
         for habit in longest_streak['daily_habits']:
             questionary.print("\t- " + habit.name + "(ID: " + str(habit.id) + ") -" +
-                              str(AnalyticsModule.get_streak(habit.id, habit.checkpoints[0].current_checkpoint)) +
+                              str(analytics_module.get_streak(habit, habit.checkpoints[0].current_checkpoint)) +
                               " days streak", style='bold fg:ansiblue')
         print("Weekly ongoing Habits:")
         for habit in longest_streak['weekly_habits']:
             questionary.print("\t- " + habit.name + "(ID: " + str(habit.id) + ") -" +
-                              str(AnalyticsModule.get_streak(habit.id, habit.checkpoints[0].current_checkpoint)) +
+                              str(analytics_module.get_streak(habit, habit.checkpoints[0].current_checkpoint)) +
                               " days streak", style='bold fg:ansiblue')
     input("Press any Key to continue...")
 
@@ -162,7 +162,6 @@ def complete_habit():
              and manager.get_habit_by_id(habit_id) is not None)):
         input("Invalid or no habit ID given.\n "
               "Press any Key to continue...")
-        pass
     else:
         manager.complete_habit(habit_id)
         click.echo(f'Habit with ID {habit_id} marked as complete.')
