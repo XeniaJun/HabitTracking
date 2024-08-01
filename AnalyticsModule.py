@@ -47,21 +47,6 @@ def get_longest_streak(habits, range):
     return max(streak_array)
 
 
-#def get_habits_by_periodicity(habits, periodicity):
-#    """
-#    Filters habits by their periodicity.
-#
-#    This function returns a list of habits that match the specified periodicity.
-#
-#    Args:
-#        habits (list): A list of Habit objects.
-#        periodicity (str): The periodicity to filter by (e.g., 'daily', 'weekly').
-#
-#   Returns:
-#        list: A list of Habit objects with the specified periodicity.
-#    """
-#    return [habit for habit in habits if habit.periodicity == periodicity]
-
 
 def analyze_habits(habit_manager):
     """

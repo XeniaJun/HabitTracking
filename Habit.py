@@ -87,14 +87,17 @@ class HabitManager:
         """
         checkpoint_status = self.get_checkpoint_by_habit_id(habit_id)
         habit = self.get_habit_by_id(habit_id)
-        if checkpoint_status is not None:
-            completion = Completion(habit_id=habit_id,
-                                    completion_status="SUCCESSFULLY" if checkpoint_status.is_valid_streak else "FAILED")
+        if habit is None:
+            questionary.print ("no Habit found for Habit ID: " + str(habit_id), style='bold fg:darkred')
         else:
-            completion = Completion(habit_id=habit_id,
-                                    completion_status="ABORTED")
-        self.session.add(completion)
-        self.session.commit()
+            if checkpoint_status is not None:
+                completion = Completion(habit_id=habit_id,
+                                        completion_status="SUCCESSFULLY" if checkpoint_status.is_valid_streak else "FAILED")
+            else:
+                completion = Completion(habit_id=habit_id,
+                                        completion_status="ABORTED")
+            self.session.add(completion)
+            self.session.commit()
 
     def get_habit(self, habit_id):
         """

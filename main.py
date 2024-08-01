@@ -63,15 +63,15 @@ def main_menue():
             choices=[
                 "Checkin Habit streak",
                 "Create Habit",
-                "Read Items",
-                "Complete habit",
                 "Create Predefined Habit",
+                "Show ongoing Habits",
+                "Complete Habit",
                 "Habit statistics",
                 "Exit"
             ]
         ).ask()
         if choice == "Create Habit":
-            name = questionary.text("Name of habit", default="nothing").ask()
+            name = (questionary.text("Name of habit").ask())
             periodicity = questionary.select("\nHow often do you want to check in your progress?",
                                              choices=["daily", "weekly"]).ask()
             target_duration_in_days = questionary.text("\n How many Days do you want to keep up?(optional)",
@@ -82,7 +82,7 @@ def main_menue():
         elif choice == "Show ongoing Habits":
             print_habits_as_list()
             input("Press any Key to continue...")
-        elif choice == "Complete habit":
+        elif choice == "Complete Habit":
             complete_habit()
         elif choice == "Create Predefined Habit":
             predefined_habit()
@@ -152,7 +152,7 @@ def complete_habit():
                           " | Created on: " + str(item.created_at)
                           , style='bold fg:ansiblue')
 
-    habit_id = questionary.text("Enter the ID of the habit to complete:").ask()
+    habit_id = questionary.text("Enter the ID of the habit to complete: ").ask()
     if (not habit_id.isdigit() or
             (manager.get_completed_habit_by_habit_id(habit_id) is not None
              and manager.get_habit_by_id(habit_id) is not None)):
@@ -163,6 +163,7 @@ def complete_habit():
         manager.complete_habit(habit_id)
         click.echo(f'Habit with ID {habit_id} marked as complete.')
         manager.delete_checkpoints_for_completed_habit(habit_id)
+
     input("Press any Key to continue...")
 
 
