@@ -18,9 +18,9 @@
   {
     "id": 3,
     "habit_id": 9,
-    "last_checkpoint": "2024-07-18",
-    "current_checkpoint": "2024-07-25",
-    "next_checkpoint": "2024-07-31",
+    "last_checkpoint": "2024-07-22",
+    "current_checkpoint": "2024-07-29",
+    "next_checkpoint": "2024-08-05",
     "is_valid_streak": 1
   }
 ]

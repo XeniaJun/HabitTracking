@@ -33,11 +33,11 @@ def get_longest_streak(habits, range):
         completion = manager.get_completed_habit_by_habit_id(habit.id)
         checkpoint = manager.get_checkpoint_by_habit_id(habit.id)
         days = 0
-        match range:
-            case "ongoing":
-                days += calculate_days(habit.created_at, checkpoint.current_checkpoint)
-            case "total":
-                days += calculate_days(habit.created_at, completion.completion_date)
+        if range == "ongoing":
+            days += calculate_days(habit.created_at, checkpoint.current_checkpoint)
+        else:
+            #case "total"
+            days += calculate_days(habit.created_at, completion.completion_date)
 
         return days
 

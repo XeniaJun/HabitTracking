@@ -128,15 +128,15 @@ class HabitManager:
         """
         habit_list = self.list_habits()
         result = []
-        match habit_status:
-            case "completed":
-                completed = self.get_completed_habits()
-                print("Completed")
-            case "running":
-                result = self.get_ongoing_habits()
-                print("Running")
-            case "failed":
-                print("Failed")
+        if habit_status == "completed":
+            completed = self.get_completed_habits()
+            print("Completed")
+        elif habit_status == "running":
+            result = self.get_ongoing_habits()
+            print("Running")
+        else:
+            #case "failed":
+            print("Failed")
         return result
 
     def get_habit_by_name(self, name):
