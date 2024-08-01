@@ -79,7 +79,7 @@ def main_menue():
             create_habit(name, periodicity, target_duration_in_days)
         elif choice == "Checkin Habit streak":
             set_milestone_for_habit()
-        elif choice == "Read Items":
+        elif choice == "Show ongoing Habits":
             print_habits_as_list()
             input("Press any Key to continue...")
         elif choice == "Complete habit":
@@ -130,7 +130,7 @@ def create_habit(name, periodicity, target_day):
     """
     target_day = datetime.datetime.max.date() if \
         (target_day == "" or not str.isdigit(target_day)) else \
-        (datetime.datetime.now().date() + datetime.timedelta(target_day))
+        (datetime.datetime.now().date() + datetime.timedelta(int(target_day)))
 
     manager = HabitManager(session)
     manager.add_habit(name, periodicity, target_day)
@@ -163,6 +163,7 @@ def complete_habit():
         manager.complete_habit(habit_id)
         click.echo(f'Habit with ID {habit_id} marked as complete.')
         manager.delete_checkpoints_for_completed_habit(habit_id)
+    input("Press any Key to continue...")
 
 
 def print_habits_as_list():
