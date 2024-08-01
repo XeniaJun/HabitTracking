@@ -1,7 +1,5 @@
 from collections import defaultdict
 
-from sqlalchemy import func
-
 from Habit import HabitManager
 from db.DatabaseModule import session
 
@@ -30,14 +28,14 @@ def get_longest_streak(habits, range):
             int: The longest streak of consecutive completions.
         """
         manager = HabitManager(session)
-        completion = manager.get_completed_habit_by_habit_id(habit.id)
-        checkpoint = manager.get_checkpoint_by_habit_id(habit.id)
+        #completion = habit.completions[0]
+        #checkpoint = habit.checkpoints[0]
         days = 0
         if range == "ongoing":
-            days += calculate_days(habit.created_at, checkpoint.current_checkpoint)
+            days += calculate_days(habit.created_at, habit.checkpoints[0].current_checkpoint)
         else:
-            #case "total"
-            days += calculate_days(habit.created_at, completion.completion_date)
+            # case "total"
+            days += calculate_days(habit.created_at, habit.completions[0].completion_date)
 
         return days
 
@@ -45,7 +43,6 @@ def get_longest_streak(habits, range):
     for habit in habits:
         streak_array.append(calculate_streak(habit))
     return max(streak_array)
-
 
 
 def analyze_habits(habit_manager):
@@ -82,8 +79,7 @@ def calculate_days(started, completed):
     return (completed - started).days if completed > started else 0
 
 
-def get_streak(habit_id):
+def get_streak(habit_id, compare_date):
     manager = HabitManager(session)
-    habit_start = manager.get_habit_by_id(habit_id).created_at
-    completed = manager.get_completion_by_habit_id(habit_id)
-    return calculate_days(started=habit_start, completed=completed)
+    habit = manager.get_habit_by_id(habit_id)
+    return calculate_days(started=habit.created_at, completed=compare_date)

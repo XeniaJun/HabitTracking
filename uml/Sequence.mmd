@@ -3,54 +3,49 @@ sequenceDiagram
     participant CLI
     participant HabitManager
     participant Database
-
-    User->>CLI: Start Application
-    CLI->>User: Show Main Menu
-    User->>CLI: Select "Create Habit"
-    CLI->>User: Prompt for habit name
-    User->>CLI: Enter habit name
-    CLI->>User: Prompt for periodicity
-    User->>CLI: Select periodicity
-    CLI->>CLI: Call add_habit(name, periodicity)
-    CLI->>HabitManager: Add habit
-    HabitManager->>Database: Insert habit
-    Database-->>HabitManager: Confirm insertion
-    HabitManager-->>CLI: Confirm habit creation
-    CLI-->>User: Display habit added message
-
-    CLI->>User: Show Main Menu
-    User->>CLI: Select "Read Items"
-    CLI->>CLI: Call list_habits()
-    CLI->>HabitManager: List habits
-    HabitManager->>Database: Query habits
-    Database-->>HabitManager: Return habits
-    HabitManager-->>CLI: Return habits list
-    CLI-->>User: Display habits
-
-    CLI->>User: Show Main Menu
-    User->>CLI: Select "Complete habit"
-    CLI->>User: Prompt for habit ID
-    User->>CLI: Enter habit ID
-    CLI->>CLI: Call complete_habit(habit_id)
-    CLI->>HabitManager: Mark habit complete
-    HabitManager->>Database: Update habit status
-    Database-->>HabitManager: Confirm update
-    HabitManager-->>CLI: Confirm habit completion
-    CLI-->>User: Display habit completion message
-
-    CLI->>User: Show Main Menu
-    User->>CLI: Select "Create Predefined Habit"
-    CLI->>User: Prompt for predefined habit
-    User->>CLI: Select predefined habit
-    CLI->>User: Prompt for periodicity
-    User->>CLI: Select periodicity
-    CLI->>CLI: Call add_habit(predefined habit, periodicity)
-    CLI->>HabitManager: Add predefined habit
-    HabitManager->>Database: Insert predefined habit
-    Database-->>HabitManager: Confirm insertion
-    HabitManager-->>CLI: Confirm predefined habit creation
-    CLI-->>User: Display predefined habit added message
-
-    CLI->>User: Show Main Menu
-    User->>CLI: Select "Exit"
-    CLI-->>User: Exit application
+    User ->> CLI: Start Application
+    CLI ->> User: Show Main Menu
+    User ->> CLI: Select "Create Habit"
+    CLI ->> User: Prompt for habit name
+    User ->> CLI: Enter habit name
+    CLI ->> User: Prompt for periodicity
+    User ->> CLI: Select periodicity
+    CLI ->> CLI: Call add_habit(name, periodicity)
+    CLI ->> HabitManager: Add habit
+    HabitManager ->> Database: Insert habit
+    Database -->> HabitManager: Confirm insertion
+    HabitManager -->> CLI: Confirm habit creation
+    CLI -->> User: Display habit added message
+    CLI ->> User: Show Main Menu
+    User ->> CLI: Select "Read Items"
+    CLI ->> CLI: Call list_habits()
+    CLI ->> HabitManager: List habits
+    HabitManager ->> Database: Query habits
+    Database -->> HabitManager: Return habits
+    HabitManager -->> CLI: Return habits list
+    CLI -->> User: Display habits
+    CLI ->> User: Show Main Menu
+    User ->> CLI: Select "Complete habit"
+    CLI ->> User: Prompt for habit ID
+    User ->> CLI: Enter habit ID
+    CLI ->> CLI: Call complete_habit(habit_id)
+    CLI ->> HabitManager: Mark habit complete
+    HabitManager ->> Database: Update habit status
+    Database -->> HabitManager: Confirm update
+    HabitManager -->> CLI: Confirm habit completion
+    CLI -->> User: Display habit completion message
+    CLI ->> User: Show Main Menu
+    User ->> CLI: Select "Create Predefined Habit"
+    CLI ->> User: Prompt for predefined habit
+    User ->> CLI: Select predefined habit
+    CLI ->> User: Prompt for periodicity
+    User ->> CLI: Select periodicity
+    CLI ->> CLI: Call add_habit(predefined habit, periodicity)
+    CLI ->> HabitManager: Add predefined habit
+    HabitManager ->> Database: Insert predefined habit
+    Database -->> HabitManager: Confirm insertion
+    HabitManager -->> CLI: Confirm predefined habit creation
+    CLI -->> User: Display predefined habit added message
+    CLI ->> User: Show Main Menu
+    User ->> CLI: Select "Exit"
+    CLI -->> User: Exit application

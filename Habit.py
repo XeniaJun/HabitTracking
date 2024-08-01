@@ -24,8 +24,8 @@ def print_list(headline, broken_habits):
     questionary.print(headline, style='bold fg:darkred')
     for broken_habit in broken_habits:
         questionary.print(
-            " - " + broken_habit.name + "(ID: " + str(broken_habit.id) + "), after" + AnalyticsModule.get_streak(
-                broken_habit.id) + "sucessfull Days", style='bold fg:ansiblue')
+            " - " + broken_habit.name + "(ID: " + str(broken_habit.id) + "), after" + str(AnalyticsModule.get_streak(
+                broken_habit.id, broken_habit.completions[0].completion_date)) + "sucessfull Days", style='bold fg:ansiblue')
     input("Press any Key to continue...")
 
 
@@ -66,7 +66,7 @@ class HabitManager:
               f'target date: {target_date}')
         print(f'done')
 
-    def is_running_habit_streak(self, habit: int):
+    def has_checkpoint(self, habit: int):
         """
 
         Args:
@@ -76,7 +76,7 @@ class HabitManager:
 
         """
         checkpoint = self.get_checkpoint_by_habit_id(habit)
-        return True if checkpoint is not None and checkpoint.is_valid_streak else False
+        return True if checkpoint is not None else False
 
     def complete_habit(self, habit_id: int):
         """
@@ -88,7 +88,7 @@ class HabitManager:
         checkpoint_status = self.get_checkpoint_by_habit_id(habit_id)
         habit = self.get_habit_by_id(habit_id)
         if habit is None:
-            questionary.print ("no Habit found for Habit ID: " + str(habit_id), style='bold fg:darkred')
+            questionary.print("no Habit found for Habit ID: " + str(habit_id), style='bold fg:darkred')
         else:
             if checkpoint_status is not None:
                 completion = Completion(habit_id=habit_id,
@@ -133,12 +133,10 @@ class HabitManager:
         result = []
         if habit_status == "completed":
             completed = self.get_completed_habits()
-            print("Completed")
         elif habit_status == "running":
             result = self.get_ongoing_habits()
-            print("Running")
         else:
-            #case "failed":
+            # case "failed":
             print("Failed")
         return result
 
@@ -164,28 +162,25 @@ class HabitManager:
         return self.session.query(Habit).filter(Habit.id.in_(subquery)).all()
 
     def checkin_habit(self, habit: int):
-        habit = self.session.query(Habit).filter_by(id=habit).first()
-        habit_target_date = habit.target_date
+        habit = self.get_habit(habit_id=habit)
+        if habit is not None:
+            habit_target_date = habit.target_date
+            if self.has_checkpoint(habit.id):
+                checkpoint = self.get_checkpoint_by_habit_id(habit.id)
 
-        if self.is_running_habit_streak(habit.id):
-            checkpoint = self.get_checkpoint_by_habit_id(habit.id)
-
-            checkpoint.is_valid_streak = streak_is_valid(checkpoint.next_checkpoint, checkpoint.current_checkpoint)
-            checkpoint.last_checkpoint = checkpoint.current_checkpoint
-            checkpoint.current_checkpoint = datetime.date.today()
-            checkpoint.next_checkpoint = set_checkpoint(datetime.datetime.now().date(), habit.periodicity) if (
-                    habit_target_date > datetime.datetime.now().date()) else None
-            self.session.commit()
-        else:
-            checkpoint = self.get_checkpoint_by_habit_id(habit.id)
-            if checkpoint is None:
+                checkpoint.is_valid_streak = streak_is_valid(checkpoint.next_checkpoint, checkpoint.current_checkpoint)
+                checkpoint.last_checkpoint = checkpoint.current_checkpoint
+                checkpoint.current_checkpoint = datetime.date.today()
+                checkpoint.next_checkpoint = set_checkpoint(datetime.datetime.now().date(), habit.periodicity) if (
+                        habit_target_date > datetime.datetime.now().date()) else None
+                self.session.commit()
+            else:
                 checkpoint = Checkpoint(habit_id=habit.id, next_checkpoint=set_checkpoint(
                     datetime.datetime.now().date(), habit.periodicity))
                 self.session.add(checkpoint)
                 self.session.commit()
-            else:
-                questionary.print("this Habit broke the streak, due to missing checkpoint."
-                                  , style='bold fg:red')
+        else:
+            print("\n ... INVALID HABIT ID ... \n")
 
     def get_habit_by_id(self, habit_id: int):
         return self.session.query(Habit).filter_by(id=habit_id).first()
@@ -200,19 +195,24 @@ class HabitManager:
     def get_checkpoint_by_habit_id(self, habit_id: int):
         return self.session.query(Checkpoint).filter_by(habit_id=habit_id).first()
 
-    def validate_habit(self):
+    def delete_checkpoint(self, checkpoint: Checkpoint):
+        self.session.delete(checkpoint)
+        return self.session.commit
+
+    def validate_habits(self):
         ongoing_habits = self.read_habits_by_status("running")
         broken_habits = []
         for habit in ongoing_habits:
-            checkpoint = self.get_checkpoint_by_habit_id(habit.id)
-            if not streak_is_valid(checkpoint.next_checkpoint, checkpoint.current_checkpoint):
-                checkpoint.is_valid_streak = False
+            checkpoint = habit.checkpoints[0]
+            if checkpoint is None or not streak_is_valid(checkpoint.next_checkpoint, checkpoint.current_checkpoint):
+                result = self.delete_checkpoint(checkpoint)
                 broken_habits.append(habit)
                 self.session.commit()
                 self.complete_habit(habit.id)
             else:
                 pass
-        print_list("you broke the streak for following Habits:\n", broken_habits)
+        if len(broken_habits) != 0:
+            print_list("you broke the streak for following Habits:\n", broken_habits)
 
     def get_completion_by_habit_id(self, habit_id):
         return self.session.query(Completion).filter_by(habit_id=habit_id).first()

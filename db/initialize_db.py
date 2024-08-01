@@ -7,7 +7,6 @@ from db.DatabaseModule import session, Habit, engine, Base, Completion, Checkpoi
 
 
 def tables_initialized():
-
     value_to__check = session.query(Habit).count() != 0
     db_values = session.query(Habit).all()
     return session.query(Habit).count() != 0

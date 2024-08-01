@@ -30,10 +30,14 @@ def view_statistics():
         questionary.print("\t " + str(longest_streak['longest ongoing streak']) + " Days ", style='bold fg:ansiblue')
         print("Daily ongoing Habits:")
         for habit in longest_streak['daily_habits']:
-            questionary.print("\t- " + habit.name + "(ID: " + str(habit.id) + ")", style='bold fg:ansiblue')
+            questionary.print("\t- " + habit.name + "(ID: " + str(habit.id) + ") -" +
+                              str(AnalyticsModule.get_streak(habit.id, habit.checkpoints[0].current_checkpoint)) +
+                              " days streak", style='bold fg:ansiblue')
         print("Weekly ongoing Habits:")
         for habit in longest_streak['weekly_habits']:
-            questionary.print("\t- " + habit.name + "(ID: " + str(habit.id) + ")", style='bold fg:ansiblue')
+            questionary.print("\t- " + habit.name + "(ID: " + str(habit.id) + ") -" +
+                              str(AnalyticsModule.get_streak(habit.id, habit.checkpoints[0].current_checkpoint)) +
+                              " days streak", style='bold fg:ansiblue')
     input("Press any Key to continue...")
 
 
@@ -185,6 +189,8 @@ def list_habits():
 
 
 if __name__ == '__main__':
+    print("Welcome to Habit Tracker!")
+    print("-------------------------\n")
     initialize_database()
-
+    HabitManager(session).validate_habits()
     main_menue()
