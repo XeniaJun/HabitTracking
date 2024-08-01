@@ -112,7 +112,7 @@ def predefined_habit():
     """
     create_habit(
         questionary.select("Choose a predefined habit!",
-                           choices=["Nail biting", "smoking", "eating sugar", "doing drugs", "drinking alcohol"]).ask(),
+                           choices=["doing exercise ", "meditation", "healthy diet", "going jogging", "doing yoga"]).ask(),
         questionary.select("How often do you want to check in your progress?",
                            choices=["daily", "weekly"]).ask(),
         questionary.text("\n How many Days do you want to keep up?").ask()

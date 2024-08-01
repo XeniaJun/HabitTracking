@@ -2,37 +2,37 @@
   {
     "id": 1,
     "habit_id": 3,
-    "completion_status": "FAILED",
-    "completion_date": "2024-06-27"
+    "completion_status": "SUCCESSFULLY",
+    "completion_date": "2024-07-28"
   },
   {
     "id": 2,
     "habit_id": 1,
     "completion_status": "FAILED",
-    "completion_date": "2024-06-27"
+    "completion_date": "2024-07-28"
   },
   {
     "id": 3,
     "habit_id": 2,
     "completion_status": "FAILED",
-    "completion_date": "2024-06-27"
+    "completion_date": "2024-07-28"
   },
   {
     "id": 4,
     "habit_id": 4,
     "completion_status": "FAILED",
-    "completion_date": "2024-06-27"
+    "completion_date": "2024-07-28"
   },
   {
     "id": 5,
     "habit_id": 5,
     "completion_status": "FAILED",
-    "completion_date": "2024-06-27"
+    "completion_date": "2024-07-28"
   },
   {
     "id": 6,
     "habit_id": 6,
     "completion_status": "SUCCESSFULLY",
-    "completion_date": "2024-06-27"
+    "completion_date": "2024-07-28"
   }
 ]

@@ -24,8 +24,8 @@ def print_list(headline, broken_habits):
     questionary.print(headline, style='bold fg:darkred')
     for broken_habit in broken_habits:
         questionary.print(
-            " - " + broken_habit.name + "(ID: " + str(broken_habit.id) + "), after" + str(AnalyticsModule.get_streak(
-                broken_habit.id, broken_habit.completions[0].completion_date)) + "sucessfull Days", style='bold fg:ansiblue')
+            " - " + broken_habit.name + "(ID: " + str(broken_habit.id) + "), after " + str(AnalyticsModule.get_streak(
+                broken_habit.id, broken_habit.completions[0].completion_date)) + " sucessfull Days", style='bold fg:ansiblue')
     input("Press any Key to continue...")
 
 
