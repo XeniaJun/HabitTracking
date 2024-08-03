@@ -129,8 +129,10 @@ class HabitManager:
         """
         checkpoint_status = self.get_checkpoint_by_habit_id(habit_id)
         habit = self.get_habit_by_id(habit_id)
+        completed = True
         if habit is None:
             questionary.print("no Habit found for Habit ID: " + str(habit_id), style='bold fg:darkred')
+            completed = False
         else:
             if checkpoint_status is not None:
                 completion = Completion(habit_id=habit_id,
@@ -140,6 +142,7 @@ class HabitManager:
                                         completion_status="ABORTED")
             self.session.add(completion)
             self.session.commit()
+        return completed
 
     def get_habit(self, habit_id):
         """

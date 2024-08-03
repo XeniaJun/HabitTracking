@@ -214,9 +214,9 @@ def complete_habit():
         input("Invalid or no habit ID given.\n "
               "Press any Key to continue...")
     else:
-        manager.complete_habit(habit_id)
-        click.echo(f'Habit with ID {habit_id} marked as complete.')
-        manager.delete_checkpoints_for_completed_habit(habit_id)
+        if manager.complete_habit(habit_id):
+            click.echo(f'Habit with ID {habit_id} marked as complete.')
+            manager.delete_checkpoints_for_completed_habit(habit_id)
 
     input("Press any Key to continue...")
 
