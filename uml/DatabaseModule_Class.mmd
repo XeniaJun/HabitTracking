@@ -1,0 +1,31 @@
+classDiagram
+    class Habit {
+        Integer id
+        String name
+        String periodicity
+        DateTime created_at
+        Date target_date
+        +add_habit(name, periodicity, target_date)
+        +mark_habit_complete(habit_id)
+        +get_habit(habit_id)
+        +list_habits()
+    }
+
+    class Completion {
+        Integer id
+        Integer habit_id
+        String completion_status
+        DateTime completion_date
+    }
+
+    class Checkpoints {
+        Integer id
+        Integer habit_id
+        DateTime last_checkpoint
+        DateTime current_checkpoint
+    }
+
+    Habit --> Completion
+    Habit --> Checkpoints
+    Completion --> Habit
+    Checkpoints --> Habit
