@@ -199,7 +199,7 @@ class HabitManager:
         Returns:
 
         """
-        subquery = self.session.query(Completion.habit_id).subquery()
+        subquery = select(Completion.habit_id)
         return self.session.query(Habit).filter(Habit.id.in_(subquery)).all()
 
     def checkin_habit(self, habit: int):
