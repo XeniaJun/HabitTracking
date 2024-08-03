@@ -83,7 +83,7 @@ classDiagram
 
 ## Code Structure
 
-- **db/DatabaseModule.py**: Database models and session setup.
+- **db/database_module.py**: Database models and session setup.
 - **main.py**: The main entry point for the CLI application.
 - **Habit.py**: Controller  for managing habits.
 - **analytics_module.py**: Controller for managing metrics like the calculation of the longest streak.

@@ -4,25 +4,64 @@ import questionary
 from sqlalchemy import select
 
 import analytics_module
-from db.DatabaseModule import Habit, Completion, Checkpoint
+from db.database_module import Habit, Completion, Checkpoint
 
 
 def get_date_differenz(current_checkpoint, last_checkpoint):
+    """
+    Args:
+        current_checkpoint: datetime object representing the current checkpoint.
+        last_checkpoint: datetime object representing the last checkpoint.
+
+    Returns:
+        The difference in days between the current checkpoint and the last checkpoint.
+    """
     return (current_checkpoint - last_checkpoint).days
 
 
 def set_checkpoint(base_date, periodicity):
+    """
+    Sets the checkpoint based on the given base_date and periodicity.
+
+    Args:
+        base_date: The base date to set the checkpoint.
+        periodicity: The periodicity for the checkpoint. Can be "daily" or "weekly".
+
+    Returns:
+        The updated checkpoint based on the base_date and periodicity.
+    """
     time_to_add = datetime.timedelta(days=1) if periodicity == "daily" \
         else datetime.timedelta(weeks=1)
     return base_date + time_to_add
 
 
 def streak_is_valid(next_checkpoint, current_checkpoint):
+    """Check if the streak is valid.
+
+    Args:
+        next_checkpoint: The next checkpoint date.
+        current_checkpoint: The current checkpoint date.
+
+    Returns:
+        True if the streak is valid, False otherwise.
+    """
     return True if next_checkpoint >= datetime.datetime.now().date() >= current_checkpoint \
         else False
 
 
 def print_list(headline, broken_habits):
+    """
+    Args:
+        headline (str): The headline or title to be displayed before printing the list of broken habits.
+        broken_habits (list): A list containing the broken habits to be displayed.
+
+    Returns:
+        None
+
+    Prints the headline in bold dark red color using the questionary library, followed by the list of broken habits. Each broken habit is displayed as a bullet point, showing the habit's name, ID, and the number of successful days.
+
+    After printing the list, the user is prompted to press any key to continue.
+    """
     questionary.print(headline, style='bold fg:darkred')
     for broken_habit in broken_habits:
         questionary.print(
@@ -35,11 +74,10 @@ def print_list(headline, broken_habits):
 
 class HabitManager:
     """
-    Manages habit tracking, including creating habits,
-    marking them as complete, and listing all habits.
+    The HabitManager class is responsible for managing habits in a database.
 
-    Attributes:
-        session: Database session for performing database operations.
+    Args:
+        session: The database session to use.
     """
 
     def __init__(self, session):

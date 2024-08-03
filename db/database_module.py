@@ -9,14 +9,16 @@ Base = declarative_base()
 
 class Habit(Base):
     """
-    Represents a habit in the habit tracking system.
+    Represents a habit.
 
     Attributes:
-        id (int): Primary key.
-        name (str): Name of the habit.
-        periodicity (str): Frequency of the habit (e.g., daily, weekly).
-        created_at (datetime): Timestamp when the habit was created.
-        completions (list of Completion): List of completions associated with this habit.
+        id (int): The habit's ID.
+        name (str): The habit's name.
+        periodicity (str): The habit's periodicity.
+        created_at (datetime.date): The habit's creation date. Defaults to today's date.
+        target_date (datetime.date): The habit's target completion date. Nullable.
+        completions (list[Completion]): List of completions associated with the habit.
+        checkpoints (list[Checkpoint]): List of checkpoints associated with the habit.
     """
     __tablename__ = 'habits'
     id = Column(Integer, primary_key=True)

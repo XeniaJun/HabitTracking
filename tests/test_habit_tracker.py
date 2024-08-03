@@ -13,7 +13,8 @@ class TestHabitTracker(unittest.TestCase):
     def test_view_statistics(self, mock_analyze_habits, mock_select):
         mock_select.return_value.ask.return_value = "get longest streak"
         mock_analyze_habits.return_value = {
-            'longest_streak': 10,
+            'longest total streak': 10,
+            'longest ongoing streak': 10,
             'daily_habits': [],
             'weekly_habits': []
         }
@@ -51,7 +52,7 @@ class TestHabitTracker(unittest.TestCase):
         create_habit("Test Habit", "daily", datetime.datetime.today().date().__str__())
 
         # mock_manager.create_habit.assert_called_once_with("Test Habit", "daily", datetime.date.today())
-        mock_click_echo.assert_called_once_with('Habit Test Habit added with periodicity daily.')
+        mock_click_echo.assert_called_once_with('Habit: Test Habit added with periodicity: daily.')
 
     @patch('main.HabitManager')
     def test_list_habits(self, mock_HabitManager):
