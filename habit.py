@@ -129,6 +129,7 @@ class HabitManager:
         """
         checkpoint_status = self.get_checkpoint_by_habit_id(habit_id)
         habit = self.get_habit_by_id(habit_id)
+
         completed = True
         if habit is None:
             questionary.print("no Habit found for Habit ID: " + str(habit_id), style='bold fg:darkred')
